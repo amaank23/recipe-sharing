@@ -9,6 +9,7 @@ import { CreateDateColumn, UpdateDateColumn } from "typeorm";
 import Profile from "./Profile";
 import { Friend } from "./Friend";
 import Recipe from "./Recipe";
+import PostLikes from "./PostLikes";
 @Entity()
 export class User {
   @PrimaryGeneratedColumn("uuid")
@@ -37,6 +38,9 @@ export class User {
 
   @OneToOne(() => Profile, (profile) => profile.user)
   profile: Profile;
+
+  @OneToMany(() => PostLikes, (postLikes) => postLikes.user)
+  postLikes: PostLikes[];
 
   @OneToMany(() => Friend, (friend) => friend.user1)
   friends1: Friend[];

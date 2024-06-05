@@ -5,15 +5,17 @@ import {
   ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
+  Unique,
 } from "typeorm";
 import User from "./User";
 import Post from "./Post";
 @Entity()
+@Unique(["user", "post"])
 export class PostLikes {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @ManyToOne(() => User, (user) => user.id)
+  @ManyToOne(() => User, (user) => user.postLikes)
   user: User;
 
   @ManyToOne(() => Post, (post) => post.postLikes)
