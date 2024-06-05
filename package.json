@@ -1,13 +1,21 @@
 {
   "name": "@recipe-sharing-web-app/source",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "cd apps/recipe-sharing-frontend && npm run dev",
+    "dev:backend": "cd apps/recipe-sharing-backend && npm run dev"
+  },
   "private": true,
-  "dependencies": {},
   "devDependencies": {
     "@nx/js": "19.1.2",
     "@nx/workspace": "19.1.2",
+    "concurrently": "^8.2.2",
     "nx": "19.1.2"
   }
 }
