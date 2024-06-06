@@ -52,6 +52,12 @@ async function getAll(req: CustomRequest, res: Response, next: NextFunction) {
       .leftJoinAndSelect("post.postImages", "postImages")
       .loadRelationCountAndMap("post.commentsCount", "post.postComments")
       .loadRelationCountAndMap("post.likesCount", "post.postLikes")
+      .leftJoinAndSelect(
+        "post.postLikes",
+        "postLikes",
+        "postLikes.userId = :userId",
+        { userId }
+      )
       .limit(+limit)
       .offset(itemsToSkip)
       .orderBy("post.created_at", "DESC")
@@ -99,7 +105,12 @@ async function addLikeToPost(
         .from(PostLikes)
         .where("id = :id", { id: postLike.id })
         .execute();
-      return res.status(200).json({ message: "Post UnLiked Successfully" });
+      return res
+        .status(200)
+        .json({
+          message: "Post UnLiked Successfully",
+          data: { action: "unlike" },
+        });
     } else {
       // add a new like
       await PostLikesRepository.createQueryBuilder("postLikes")
@@ -109,7 +120,9 @@ async function addLikeToPost(
           user: () => "'" + userId + "'",
         })
         .execute();
-      res.status(201).json({ message: "Post Liked Successfully" });
+      res
+        .status(201)
+        .json({ message: "Post Liked Successfully", data: { action: "like" } });
     }
   } catch (error) {
     const errors = {

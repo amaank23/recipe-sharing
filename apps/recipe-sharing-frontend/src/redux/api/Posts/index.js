@@ -1,4 +1,4 @@
-import { fileRequest, getRequest } from "../../../utils/baseApi";
+import { fileRequest, getRequest, postRequest } from "../../../utils/baseApi";
 import { successMessage } from "../../../utils/message";
 import { handleApiErrors } from "../../../utils/util";
 import endpoints from "../../endpoints";
@@ -8,10 +8,25 @@ import {
   addPostSuccess,
 } from "../../slices/Posts/addPostSlice";
 import {
+  commentOnPost,
+  commentOnPostFailure,
+  commentOnPostSuccess,
+} from "../../slices/Posts/commentOnPostSlice";
+import {
   getAllPost,
   getAllPostFailure,
   getAllPostSuccess,
 } from "../../slices/Posts/getAllPostSlice";
+import {
+  getCommentsByPostId,
+  getCommentsByPostIdFailure,
+  getCommentsByPostIdSuccess,
+} from "../../slices/Posts/getCommentsByPostIdSlice";
+import {
+  likeUnlikePost,
+  likeUnlikePostFailure,
+  likeUnlikePostSuccess,
+} from "../../slices/Posts/likeUnlikePostSlice";
 
 export async function addPostApi(dispatch, body, onSuccess) {
   try {
@@ -36,5 +51,50 @@ export async function getAllPostApi(dispatch, pageLimit) {
   } catch (error) {
     handleApiErrors(error, dispatch);
     dispatch(getAllPostFailure(error?.response?.data));
+  }
+}
+export async function likeUnlikePostApi(
+  dispatch,
+  postId,
+  onSuccess = () => {}
+) {
+  try {
+    dispatch(likeUnlikePost());
+    const res = await postRequest(`${endpoints.Posts.likeUnlikePost(postId)}`);
+    dispatch(likeUnlikePostSuccess(res.data));
+    onSuccess(res?.data?.data);
+  } catch (error) {
+    handleApiErrors(error, dispatch);
+    dispatch(likeUnlikePostFailure(error?.response?.data));
+  }
+}
+export async function commentOnPostApi(
+  dispatch,
+  postId,
+  body,
+  onSuccess = () => {}
+) {
+  try {
+    dispatch(commentOnPost());
+    const res = await postRequest(
+      `${endpoints.Posts.commentOnPost(postId)}`,
+      body
+    );
+    dispatch(commentOnPostSuccess(res.data));
+    successMessage(res?.data?.message);
+    onSuccess();
+  } catch (error) {
+    handleApiErrors(error, dispatch);
+    dispatch(commentOnPostFailure(error?.response?.data));
+  }
+}
+export async function getCommentsByPostIdApi(dispatch, postId) {
+  try {
+    dispatch(getCommentsByPostId());
+    const res = await getRequest(`${endpoints.Posts.commentOnPost(postId)}`);
+    dispatch(getCommentsByPostIdSuccess(res.data));
+  } catch (error) {
+    handleApiErrors(error, dispatch);
+    dispatch(getCommentsByPostIdFailure(error?.response?.data));
   }
 }

@@ -7,5 +7,7 @@ export default {
   Posts: {
     addPost: "posts",
     getAllPost: "posts",
+    likeUnlikePost: (postId) => `posts/${postId}/likes`,
+    commentOnPost: (postId) => `posts/${postId}/comments`,
   },
 };

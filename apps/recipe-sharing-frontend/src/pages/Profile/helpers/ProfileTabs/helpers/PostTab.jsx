@@ -26,6 +26,8 @@ const PostTab = () => {
               images={item.postImages.map((item) => item.url)}
               commentsCount={item.commentsCount}
               likesCount={item.likesCount}
+              postId={item.id}
+              isThisPostLiked={item.postLikes?.length > 0}
             />
           );
         })}

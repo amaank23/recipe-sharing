@@ -15,7 +15,7 @@ export const refreshRequest = (api, body) => {
 };
 
 //Post Request
-export const postRequest = (api, body) => {
+export const postRequest = (api, body = {}) => {
   const headers = {
     headers: {
       "Content-Type": "application/json",

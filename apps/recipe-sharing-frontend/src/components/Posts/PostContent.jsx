@@ -3,9 +3,7 @@ import { PropTypes } from "prop-types";
 const PostContent = ({ text, images }) => {
   return (
     <div className="mt-6">
-      <p className="text-sm text-[#2D3139] break-words hover:text-red-600">
-        {text}
-      </p>
+      <p className="text-sm text-[#2D3139] break-words">{text}</p>
       {images?.length > 0 && (
         <>
           {images.length === 1 && (
