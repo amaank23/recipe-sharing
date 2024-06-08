@@ -9,11 +9,13 @@ export const UserRepository = myDataSource.getRepository(User).extend({
   findByEmail(email: string) {
     return this.createQueryBuilder("user")
       .where("user.email = :email", { email })
+      .leftJoinAndSelect("user.profile", "Profile")
       .getOne();
   },
   findByPhone(phone: string) {
     return this.createQueryBuilder("user")
       .where("user.phone = :phone", { phone })
+      .leftJoinAndSelect("user.profile", "Profile")
       .getOne();
   },
   generateOtp() {

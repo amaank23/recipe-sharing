@@ -86,6 +86,7 @@ async function signIn(req: Request, res: Response, next: NextFunction) {
       createdAt: user.created_at,
       updatedAt: user.updated_at,
       id: user.id,
+      profile: user.profile,
     };
     if (!body.isVerified) {
       const otp = +UserRepository.generateOtp();
@@ -133,6 +134,7 @@ async function verifyOtp(req: Request, res: Response, next: NextFunction) {
       createdAt: user.created_at,
       updatedAt: user.updated_at,
       id: user.id,
+      profile: user.profile,
     };
     let token = UserRepository.generateToken(body);
     res.status(200).json({ message: SUCCESSFULLY_VERFIED, user: body, token });

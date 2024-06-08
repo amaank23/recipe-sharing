@@ -11,9 +11,6 @@ const MainActions = () => {
       <div className="bg-[#F4F5F7] flex justify-center items-center w-10 h-10 rounded-full cursor-pointer">
         <img src={MsgIcon} alt="" />
       </div>
-      <div className="bg-[#F4F5F7] flex justify-center items-center w-10 h-10 rounded-full cursor-pointer">
-        <img src={PlusIcon} alt="" />
-      </div>
       <UserIconAndDropdown />
     </div>
   );

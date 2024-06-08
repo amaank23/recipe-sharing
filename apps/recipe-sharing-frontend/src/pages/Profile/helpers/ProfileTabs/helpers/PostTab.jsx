@@ -9,12 +9,13 @@ const PostTab = () => {
     page: 1,
     limit: 999,
   });
+  const EditProfile = useSelector((state) => state.EditProfile);
   const dispatch = useDispatch();
   const getAllPost = useSelector((state) => state.getAllPost);
   const addPost = useSelector((state) => state.addPost);
   useEffect(() => {
     getAllPostApi(dispatch, pageLimit);
-  }, [addPost.data]);
+  }, [addPost.data, EditProfile?.data]);
   return (
     <>
       <AddPost />

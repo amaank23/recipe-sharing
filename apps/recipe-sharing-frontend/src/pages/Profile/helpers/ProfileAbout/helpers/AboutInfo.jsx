@@ -4,14 +4,19 @@ import CalenderIcon from "../../../../../assets/calender.png";
 import EarthIcon from "../../../../../assets/earth.png";
 import WorkIcon from "../../../../../assets/work.png";
 import AboutInfoSingle from "./AboutInfoSingle";
-const AboutInfo = () => {
+const AboutInfo = ({ city, country, joinedDate, email }) => {
   return (
     <div className="flex flex-col gap-5">
-      <AboutInfoSingle icon={LocIcon} label={"Yogyakarta, ID"} />
-      <AboutInfoSingle icon={HeartIcon} label={"Single"} />
-      <AboutInfoSingle icon={CalenderIcon} label={"Joined June 2012"} />
-      <AboutInfoSingle icon={EarthIcon} label={"amaanwaseem24@gmail.com"} />
-      <AboutInfoSingle icon={WorkIcon} label={"Working at Sebo Studio"} />
+      {(city || country) && (
+        <AboutInfoSingle
+          icon={LocIcon}
+          label={`${city || ""}${`, ${country || ""}`}`}
+        />
+      )}
+      {joinedDate && (
+        <AboutInfoSingle icon={CalenderIcon} label={`Joined ${joinedDate}`} />
+      )}
+      {email && <AboutInfoSingle icon={EarthIcon} label={email} />}
     </div>
   );
 };

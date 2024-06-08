@@ -1,10 +1,19 @@
 import { Col, Form, Input, Modal, Row } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoCloudUpload } from "react-icons/io5";
 import CustomButton from "../../../components/Button/CustomButton";
 import { RxCross1 } from "react-icons/rx";
+import { EditProfileApi } from "../../../redux/api/Profile";
+import { useDispatch, useSelector } from "react-redux";
+import { getFromStorage, setInStorage } from "../../../utils/storage";
+import { useForm } from "antd/es/form/Form";
+import { setUser } from "../../../redux/slices/Auth/authSlice";
 
 const EditProfileModal = ({ open, close }) => {
+  const [form] = useForm();
+  const user = getFromStorage("user");
+  const dispatch = useDispatch();
+  const EditProfile = useSelector((state) => state.EditProfile);
   const [photos, setPhotos] = useState({
     cover: { preview: null, file: null },
     profile: { preview: null, file: null },
@@ -40,10 +49,30 @@ const EditProfileModal = ({ open, close }) => {
       formData.append("coverImage", photos.cover.file);
     }
     // call api
+    EditProfileApi(dispatch, formData, user.profile.id, (data) => {
+      close();
+      const newProfileUser = {
+        ...user,
+        profile: data.data,
+      };
+      setInStorage("user", newProfileUser);
+      dispatch(setUser({ user: newProfileUser }));
+    });
   }
+  useEffect(() => {
+    if (user.profile.about) {
+      form.setFieldValue("about", user.profile.about);
+    }
+    if (user.profile.city) {
+      form.setFieldValue("city", user.profile.city);
+    }
+    if (user.profile.country) {
+      form.setFieldValue("country", user.profile.country);
+    }
+  }, []);
   return (
     <Modal title="Edit Profile" open={open} onCancel={close} footer={null}>
-      <Form onFinish={onFinish}>
+      <Form onFinish={onFinish} form={form}>
         <div className="mb-[1rem] py-4 relative bg-white rounded-xl ">
           <Row gutter={16}>
             <Col xs={24}>
@@ -60,10 +89,12 @@ const EditProfileModal = ({ open, close }) => {
                   htmlFor="profile-pic"
                   className="w-full h-full flex justify-center items-center cursor-pointer"
                 >
-                  {photos.profile.preview ? (
+                  {photos.profile.preview || user.profile.profileImgUrl ? (
                     <>
                       <img
-                        src={photos.profile.preview}
+                        src={
+                          photos.profile.preview || user.profile.profileImgUrl
+                        }
                         className="w-full h-full"
                         alt=""
                       />
@@ -90,10 +121,10 @@ const EditProfileModal = ({ open, close }) => {
                   htmlFor="cover-pic"
                   className="w-full h-full flex justify-center items-center cursor-pointer"
                 >
-                  {photos.cover.preview ? (
+                  {photos.cover.preview || user.profile.coverImgUrl ? (
                     <>
                       <img
-                        src={photos.cover.preview}
+                        src={photos.cover.preview || user.profile.coverImgUrl}
                         className="w-full h-full"
                         alt=""
                       />
@@ -132,7 +163,7 @@ const EditProfileModal = ({ open, close }) => {
             </Col>
             <Col xs={24} className="mt-5">
               <label htmlFor="country">Country</label>
-              <Form.Item name={"coountry"}>
+              <Form.Item name={"country"}>
                 <Input
                   name={"country"}
                   id="country"
@@ -144,7 +175,9 @@ const EditProfileModal = ({ open, close }) => {
           </Row>
         </div>
         <div>
-          <CustomButton htmlType="submit">Update</CustomButton>
+          <CustomButton htmlType="submit" loading={EditProfile.loading}>
+            Update
+          </CustomButton>
         </div>
       </Form>
     </Modal>

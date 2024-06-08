@@ -6,7 +6,10 @@ const PostUser = ({ user, createdAt }) => {
     <div className="flex justify-between items-start">
       <div className="flex gap-4 items-center">
         <div className="w-[42px] h-[42px] overflow-hidden rounded-full">
-          <img src={UserIcon} className="w-[42px] h-[42px] object-cover" />
+          <img
+            src={user?.profile?.profileImgUrl || "https://placehold.co/42x42"}
+            className="w-[42px] h-[42px] object-cover"
+          />
         </div>
         <div className="flex flex-col">
           <h2 className="text-sm text-[#2D3139] font-semibold">{`${user.firstName} ${user.lastName}`}</h2>

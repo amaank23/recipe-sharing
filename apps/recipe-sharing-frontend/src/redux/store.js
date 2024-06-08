@@ -8,12 +8,16 @@ import getAllPostSlice from "./slices/Posts/getAllPostSlice";
 import likeUnlikePostSlice from "./slices/Posts/likeUnlikePostSlice";
 import commentOnPostSlice from "./slices/Posts/commentOnPostSlice";
 import getCommentsByPostIdSlice from "./slices/Posts/getCommentsByPostIdSlice";
+import EditProfileSlice from "./slices/Profile/EditProfileSlice";
 
 const authSlices = {
   auth: authSlice,
   createUser: createUserSlice,
   loginUser: loginUserSlice,
   verifyUser: verifyUserSlice,
+};
+const profileSlices = {
+  EditProfile: EditProfileSlice,
 };
 
 const postSlices = {
@@ -27,6 +31,7 @@ const postSlices = {
 const rootSlices = combineReducers({
   ...authSlices,
   ...postSlices,
+  ...profileSlices,
 });
 
 export const store = configureStore({

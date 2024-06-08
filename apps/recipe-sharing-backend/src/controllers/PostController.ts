@@ -39,7 +39,7 @@ async function create(req: CustomRequest, res: Response, next: NextFunction) {
       { id: profile.id },
       { postsCount: newPostCount }
     );
-    req.socket.emit(`post-count-update-${req.user.data.id}`, newPostCount);
+    req.io.emit(`post-count-update-${req.user.data.id}`, newPostCount);
     res.status(201).json({
       message: "Post Successfully Created",
       data: { post, postImages },
