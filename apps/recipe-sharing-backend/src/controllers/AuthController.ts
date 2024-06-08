@@ -14,6 +14,7 @@ import {
 } from "../utils/constants";
 import { compareHashes, generateHashedPassword } from "../utils/hashing";
 import User from "../entities/User";
+import { ProfileRepository } from "../repository/profile.repository";
 
 async function signUp(req: Request, res: Response, next: NextFunction) {
   try {
@@ -37,6 +38,13 @@ async function signUp(req: Request, res: Response, next: NextFunction) {
       otp: otp,
       phone,
     });
+    const profile = ProfileRepository.create();
+    user.profile = {
+      ...profile,
+      friendsCount: 0,
+      postsCount: 0,
+      recipesCount: 0,
+    };
     await UserRepository.save(user);
     UserRepository.sendOtp(email, `Otp is ${otp}`);
     res.status(201).json({

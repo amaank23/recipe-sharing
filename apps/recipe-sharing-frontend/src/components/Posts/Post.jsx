@@ -40,7 +40,7 @@ const Post = ({
       <Divider className="mt-4" />
       {isCommentOn && (
         <>
-          <PostComments postId={postId} />
+          <PostComments postId={postId} incrementComment={incrementComment} />
           <PostsCommentAdd postId={postId} />
         </>
       )}

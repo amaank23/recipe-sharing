@@ -37,7 +37,7 @@ export class User {
   @Column()
   otp: number;
 
-  @OneToOne(() => Profile, (profile) => profile.user)
+  @OneToOne(() => Profile, (profile) => profile.user, { cascade: true })
   profile: Profile;
 
   @OneToMany(() => PostLikes, (postLikes) => postLikes.user)

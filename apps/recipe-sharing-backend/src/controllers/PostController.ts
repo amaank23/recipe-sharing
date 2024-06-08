@@ -7,6 +7,8 @@ import { CustomRequest } from "../middlewares/authMiddleware";
 import { PostLikesRepository } from "../repository/postLikes.repository";
 import PostLikes from "../entities/PostLikes";
 import { PostCommentsRepository } from "../repository/postComments.repository";
+import { UserRepository } from "../repository/user.repository";
+import { ProfileRepository } from "../repository/profile.repository";
 
 async function create(req: CustomRequest, res: Response, next: NextFunction) {
   try {
@@ -29,6 +31,15 @@ async function create(req: CustomRequest, res: Response, next: NextFunction) {
       }
       postImages = files;
     }
+    const profile = await ProfileRepository.findOne({
+      where: { user: { id: req.user.data.id } },
+    });
+    const newPostCount = profile.postsCount + 1;
+    await ProfileRepository.update(
+      { id: profile.id },
+      { postsCount: newPostCount }
+    );
+    req.socket.emit(`post-count-update-${req.user.data.id}`, newPostCount);
     res.status(201).json({
       message: "Post Successfully Created",
       data: { post, postImages },
@@ -170,6 +181,8 @@ export async function addComment(
     const newlyAddedComment = await PostCommentsRepository.findOne({
       where: { id: newCommentId },
     });
+    const user = await UserRepository.findOne({ where: { id: userId } });
+    newlyAddedComment.user = user;
     io.emit(`new-comment-${post.id}`, newlyAddedComment);
     res.status(201).json({
       message: "Comment Added Successfully!",

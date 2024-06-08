@@ -1,8 +1,12 @@
 import React from "react";
 import EditIcon from "./../../../assets/edit-icon.png";
+import { useToggle } from "../../../utils/hooks/useToggle";
+import EditProfileModal from "./EditProfileModal";
 const ProfileTop = () => {
+  const [open, toggle] = useToggle();
   return (
     <div className="mt-3 mb-6 relative bg-white rounded-xl">
+      {open && <EditProfileModal open={open} close={toggle} />}
       <div className="h-[206px] 2xl:h-[306px] rounded-t-xl overflow-hidden bg-slate-500">
         {/* <img
       src={CoverImg}
@@ -20,7 +24,10 @@ const ProfileTop = () => {
           </div>
         </div>
         <div className=" mr-4">
-          <button className="text-white bg-[#F85F35] border border-[#F85F35] hover:bg-[#f85f35c8] transition-all rounded-lg flex gap-1 py-[10px] px-4 items-center">
+          <button
+            onClick={toggle}
+            className="text-white bg-[#F85F35] border border-[#F85F35] hover:bg-[#f85f35c8] transition-all rounded-lg flex gap-1 py-[10px] px-4 items-center"
+          >
             <img src={EditIcon} /> Edit Profile
           </button>
         </div>

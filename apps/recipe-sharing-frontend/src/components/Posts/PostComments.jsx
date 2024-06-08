@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { getCommentsByPostIdApi } from "../../redux/api/Posts";
 import { useDispatch, useSelector } from "react-redux";
+import { socket } from "../../utils/socket";
 
-const PostComments = ({ postId }) => {
+const PostComments = ({ postId, incrementComment }) => {
   const dispatch = useDispatch();
   const [comments, setComments] = useState([]);
   useEffect(() => {
@@ -12,6 +13,19 @@ const PostComments = ({ postId }) => {
       });
     }
   }, [postId]);
+  function onNewComment(data) {
+    setComments((prev) => {
+      return [...prev, { ...data }];
+    });
+    incrementComment();
+  }
+  useEffect(() => {
+    const listenerName = `new-comment-${postId}`;
+    socket.on(listenerName, onNewComment);
+    return () => {
+      socket.off(listenerName, onNewComment);
+    };
+  }, []);
   return (
     <div className="mb-3 flex flex-col gap-2">
       {comments.map((item) => {
