@@ -10,6 +10,7 @@ import Profile from "./Profile";
 import { Friend } from "./Friend";
 import Recipe from "./Recipe";
 import PostLikes from "./PostLikes";
+import PostComments from "./PostComments";
 @Entity()
 export class User {
   @PrimaryGeneratedColumn("uuid")
@@ -50,6 +51,9 @@ export class User {
 
   @OneToMany(() => Recipe, (recipe) => recipe.user)
   recipes: Recipe[];
+
+  @OneToMany(() => PostComments, (postComments) => postComments.user)
+  postComments: PostComments[];
 
   @CreateDateColumn({
     type: "timestamp",

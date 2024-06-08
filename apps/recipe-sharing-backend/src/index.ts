@@ -12,7 +12,9 @@ import FriendsRouter from "./routes/friends";
 import RecipesRouter from "./routes/recipes";
 import "dotenv/config";
 import errorMiddleware from "./middlewares/errorMiddleware";
-
+import { Server } from "socket.io";
+import http from "http";
+import { CustomRequest } from "./middlewares/authMiddleware";
 myDataSource
   .initialize()
   .then(() => {
@@ -23,6 +25,13 @@ myDataSource
   });
 
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, { cors: { origin: "*" } });
+
+app.use((req: CustomRequest, res, next) => {
+  req.io = io;
+  next();
+});
 
 app.use(morgan("tiny"));
 app.use(express.json());
@@ -39,6 +48,17 @@ app.use("/api/recipes", RecipesRouter);
 
 app.use(errorMiddleware);
 
-app.listen(5000, () => {
+// Handle the connection event
+io.on("connection", (socket) => {
+  console.log("a user connected");
+
+  // You can set up other events here or in separate files
+
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+  });
+});
+
+server.listen(5000, () => {
   console.log("Server is running on port 5000");
 });

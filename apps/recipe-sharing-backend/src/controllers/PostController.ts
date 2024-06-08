@@ -58,6 +58,8 @@ async function getAll(req: CustomRequest, res: Response, next: NextFunction) {
         "postLikes.userId = :userId",
         { userId }
       )
+      .leftJoinAndSelect("post.user", "User")
+      .leftJoinAndSelect("User.profile", "UserProfile")
       .limit(+limit)
       .offset(itemsToSkip)
       .orderBy("post.created_at", "DESC")
@@ -105,12 +107,10 @@ async function addLikeToPost(
         .from(PostLikes)
         .where("id = :id", { id: postLike.id })
         .execute();
-      return res
-        .status(200)
-        .json({
-          message: "Post UnLiked Successfully",
-          data: { action: "unlike" },
-        });
+      return res.status(200).json({
+        message: "Post UnLiked Successfully",
+        data: { action: "unlike" },
+      });
     } else {
       // add a new like
       await PostLikesRepository.createQueryBuilder("postLikes")
@@ -142,6 +142,7 @@ export async function addComment(
     const { postId } = req.params;
     const userId = req.user.data.id;
     const { comment } = req.body;
+    const { io } = req;
     // check if post exist
     const post = await PostRepository.createQueryBuilder("post")
       .where("post.id = :postId", { postId })
@@ -169,6 +170,7 @@ export async function addComment(
     const newlyAddedComment = await PostCommentsRepository.findOne({
       where: { id: newCommentId },
     });
+    io.emit(`new-comment-${post.id}`, newlyAddedComment);
     res.status(201).json({
       message: "Comment Added Successfully!",
       comment: newlyAddedComment,
@@ -202,7 +204,8 @@ export async function getAllComments(
       "postComments"
     )
       .where("postComments.postId = :postId", { postId })
-      .orderBy("created_at", "DESC")
+      .leftJoinAndSelect("postComments.user", "User")
+      .orderBy("postComments.created_at", "DESC")
       .getMany();
     res
       .status(200)

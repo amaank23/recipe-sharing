@@ -88,11 +88,12 @@ export async function commentOnPostApi(
     dispatch(commentOnPostFailure(error?.response?.data));
   }
 }
-export async function getCommentsByPostIdApi(dispatch, postId) {
+export async function getCommentsByPostIdApi(dispatch, postId, onSuccess) {
   try {
     dispatch(getCommentsByPostId());
     const res = await getRequest(`${endpoints.Posts.commentOnPost(postId)}`);
     dispatch(getCommentsByPostIdSuccess(res.data));
+    onSuccess(res.data);
   } catch (error) {
     handleApiErrors(error, dispatch);
     dispatch(getCommentsByPostIdFailure(error?.response?.data));

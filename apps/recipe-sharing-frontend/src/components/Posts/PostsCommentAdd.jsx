@@ -2,8 +2,21 @@ import UserIcon from "./../../assets/user-1.png";
 import ImageUploadIcon from "./../../assets/upload.png";
 import AttachIcon from "./../../assets/attach.png";
 import Emojicon from "./../../assets/emoji.png";
+import { useDispatch } from "react-redux";
+import { commentOnPostApi } from "../../redux/api/Posts";
 
-const PostsCommentAdd = () => {
+const PostsCommentAdd = ({ postId }) => {
+  const dispatch = useDispatch();
+  function onCommentAdd(event) {
+    if (event.key === "Enter") {
+      commentOnPostApi(
+        dispatch,
+        postId,
+        { comment: event.target.value },
+        () => (event.target.value = "")
+      );
+    }
+  }
   return (
     <div className="bg-white">
       <div className="flex items-center gap-4">
@@ -15,12 +28,13 @@ const PostsCommentAdd = () => {
             type="text"
             placeholder="Write your comment "
             className="w-full focus-visible:outline-none bg-[#F4F5F7] h-[46px] p-3"
+            onKeyDown={onCommentAdd}
           />
-          <div className="absolute z-10 right-3 top-[50%] -translate-y-2/4 flex gap-4 items-center">
+          {/* <div className="absolute z-10 right-3 top-[50%] -translate-y-2/4 flex gap-4 items-center">
             <img src={AttachIcon} className="cursor-pointer" />
             <img src={Emojicon} className="cursor-pointer" />
             <img src={ImageUploadIcon} className="cursor-pointer" />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

@@ -1,9 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { UserRepository } from "../repository/user.repository";
 import { JwtPayload } from "jsonwebtoken";
+import { Server, Socket } from "socket.io";
+import { DefaultEventsMap } from "socket.io/dist/typed-events";
 
 export interface CustomRequest extends Request {
   user?: JwtPayload;
+  io?: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>;
 }
 
 export default function authMiddleware(

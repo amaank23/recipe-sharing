@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { authFailure, authSuccess } from "./redux/slices/Auth/authSlice";
 import AuthGuard from "./components/Guards/AuthGuard";
 import Profile from "./pages/Profile/Profile";
+import { socket } from "./utils/socket";
 
 axios.defaults.baseURL = "http://localhost:5000/api/";
 
@@ -23,10 +24,17 @@ function App() {
       dispatch(authFailure());
     }
   }, []);
+  useEffect(() => {
+    socket.connect();
 
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
   if (loading) {
     return <h2>...Loading</h2>;
   }
+
   return (
     <div>
       <Routes>

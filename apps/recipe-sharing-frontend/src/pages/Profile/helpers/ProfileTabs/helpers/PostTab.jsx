@@ -28,6 +28,8 @@ const PostTab = () => {
               likesCount={item.likesCount}
               postId={item.id}
               isThisPostLiked={item.postLikes?.length > 0}
+              user={item.user}
+              createdAt={item.created_at}
             />
           );
         })}

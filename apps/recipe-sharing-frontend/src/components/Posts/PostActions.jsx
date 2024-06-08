@@ -9,6 +9,7 @@ const PostActions = ({
   likesCount,
   postId,
   isThisPostLiked,
+  toggleComments,
 }) => {
   const [isPostLiked, setIsPostLiked] = useState(isThisPostLiked);
   const [likes, setLikes] = useState(likesCount);
@@ -32,7 +33,10 @@ const PostActions = ({
         likesCount={likes}
         isPostLiked={isPostLiked}
       />
-      <div className="flex items-center gap-3 cursor-pointer">
+      <div
+        className="flex items-center gap-3 cursor-pointer"
+        onClick={toggleComments}
+      >
         <img src={CommentIcon} />
         <span className="text-[#9D9DAF] text-sm">{commentsCount} Comments</span>
       </div>

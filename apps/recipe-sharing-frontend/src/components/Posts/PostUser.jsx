@@ -1,6 +1,7 @@
+import dayjs from "dayjs";
 import UserIcon from "./../../assets/user-1.png";
 
-const PostUser = () => {
+const PostUser = ({ user, createdAt }) => {
   return (
     <div className="flex justify-between items-start">
       <div className="flex gap-4 items-center">
@@ -8,8 +9,12 @@ const PostUser = () => {
           <img src={UserIcon} className="w-[42px] h-[42px] object-cover" />
         </div>
         <div className="flex flex-col">
-          <h2 className="text-sm text-[#2D3139] font-semibold">Aman khan</h2>
-          <p className="text-[#92929D] text-xs">12 April at 09.28 PM</p>
+          <h2 className="text-sm text-[#2D3139] font-semibold">{`${user.firstName} ${user.lastName}`}</h2>
+          <p className="text-[#92929D] text-xs">
+            {`${dayjs(createdAt).format("DD MMMM")} at ${dayjs(
+              createdAt
+            ).format("h:mm A")}`}
+          </p>
         </div>
       </div>
     </div>
