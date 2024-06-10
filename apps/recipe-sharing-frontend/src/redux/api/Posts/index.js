@@ -13,6 +13,11 @@ import {
   commentOnPostSuccess,
 } from "../../slices/Posts/commentOnPostSlice";
 import {
+  getAllPostsById,
+  getAllPostsByIdFailure,
+  getAllPostsByIdSuccess,
+} from "../../slices/Posts/getAllPostsByIdSlice";
+import {
   getAllPost,
   getAllPostFailure,
   getAllPostSuccess,
@@ -97,5 +102,19 @@ export async function getCommentsByPostIdApi(dispatch, postId, onSuccess) {
   } catch (error) {
     handleApiErrors(error, dispatch);
     dispatch(getCommentsByPostIdFailure(error?.response?.data));
+  }
+}
+export async function getAllPostsByIdApi(dispatch, pageLimit, userId) {
+  try {
+    dispatch(getAllPostsById());
+    const res = await getRequest(
+      `${endpoints.Posts.getAllPostsById(userId)}?page=${
+        pageLimit.page
+      }&limit=${pageLimit.limit}`
+    );
+    dispatch(getAllPostsByIdSuccess(res.data));
+  } catch (error) {
+    handleApiErrors(error, dispatch);
+    dispatch(getAllPostsByIdFailure(error?.response?.data));
   }
 }

@@ -9,8 +9,13 @@ export default {
     getAllPost: "posts",
     likeUnlikePost: (postId) => `posts/${postId}/likes`,
     commentOnPost: (postId) => `posts/${postId}/comments`,
+    getAllPostsById: (userId) => `posts/users/${userId}`,
   },
   Profile: {
     EditProfile: (profileId) => `profiles/${profileId}`,
+  },
+  Users: {
+    getAllUsers: "users",
+    getUserById: (userId) => `users/${userId}`,
   },
 };

@@ -9,6 +9,8 @@ import { authFailure, authSuccess } from "./redux/slices/Auth/authSlice";
 import AuthGuard from "./components/Guards/AuthGuard";
 import Profile from "./pages/Profile/Profile";
 import { socket } from "./utils/socket";
+import ProfileOther from "./pages/ProfileOther/ProfileOther";
+import Newsfeed from "./pages/Newsfeed/Newsfeed";
 
 axios.defaults.baseURL = "http://localhost:5000/api/";
 
@@ -45,8 +47,9 @@ function App() {
           element={
             <AuthGuard>
               <Routes>
-                <Route path="/" element={<h1>Home Page</h1>} />
+                <Route path="/" element={<Newsfeed />} />
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/profile/:id" element={<ProfileOther />} />
               </Routes>
             </AuthGuard>
           }

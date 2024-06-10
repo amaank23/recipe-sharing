@@ -10,6 +10,7 @@ import PostRouter from "./routes/posts";
 import ProfilesRouter from "./routes/profiles";
 import FriendsRouter from "./routes/friends";
 import RecipesRouter from "./routes/recipes";
+import UsersRoutes from "./routes/users";
 import "dotenv/config";
 import errorMiddleware from "./middlewares/errorMiddleware";
 import { Server } from "socket.io";
@@ -45,6 +46,7 @@ app.use("/api/profiles", ProfilesRouter);
 app.use("/api/posts", PostRouter);
 app.use("/api/friends", FriendsRouter);
 app.use("/api/recipes", RecipesRouter);
+app.use("/api/users", UsersRoutes);
 
 app.use(errorMiddleware);
 

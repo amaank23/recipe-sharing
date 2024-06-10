@@ -9,6 +9,9 @@ import likeUnlikePostSlice from "./slices/Posts/likeUnlikePostSlice";
 import commentOnPostSlice from "./slices/Posts/commentOnPostSlice";
 import getCommentsByPostIdSlice from "./slices/Posts/getCommentsByPostIdSlice";
 import EditProfileSlice from "./slices/Profile/EditProfileSlice";
+import getAllUsersSlice from "./slices/Users/getAllUsersSlice";
+import getUserByIdSlice from "./slices/Users/getUserByIdSlice";
+import getAllPostsByIdSlice from "./slices/Posts/getAllPostsByIdSlice";
 
 const authSlices = {
   auth: authSlice,
@@ -20,18 +23,25 @@ const profileSlices = {
   EditProfile: EditProfileSlice,
 };
 
+const usersSlices = {
+  getAllUsers: getAllUsersSlice,
+  getUserById: getUserByIdSlice,
+};
+
 const postSlices = {
   addPost: addPostSlice,
   getAllPost: getAllPostSlice,
   likeUnlikePost: likeUnlikePostSlice,
   commentOnPost: commentOnPostSlice,
   getCommentsByPostId: getCommentsByPostIdSlice,
+  getAllPostsById: getAllPostsByIdSlice,
 };
 
 const rootSlices = combineReducers({
   ...authSlices,
   ...postSlices,
   ...profileSlices,
+  ...usersSlices,
 });
 
 export const store = configureStore({

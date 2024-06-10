@@ -86,6 +86,47 @@ async function getAll(req: CustomRequest, res: Response, next: NextFunction) {
     next(errors);
   }
 }
+
+async function getAllPostsById(
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { page, limit } = req.query;
+    const itemsToSkip = (+page - 1) * +limit;
+    const userId = req.params.id;
+    const loggedInUserId = req.user.data.id;
+    const posts = await PostRepository.createQueryBuilder("post")
+      .where("post.userId = :userId", { userId })
+      .leftJoinAndSelect("post.postImages", "postImages")
+      .loadRelationCountAndMap("post.commentsCount", "post.postComments")
+      .loadRelationCountAndMap("post.likesCount", "post.postLikes")
+      .leftJoinAndSelect(
+        "post.postLikes",
+        "postLikes",
+        "postLikes.userId = :loggedInUserId",
+        { loggedInUserId }
+      )
+      .leftJoinAndSelect("postLikes.user", "UserPostLikes")
+      .leftJoinAndSelect("post.user", "User")
+      .leftJoinAndSelect("User.profile", "UserProfile")
+      .limit(+limit)
+      .offset(itemsToSkip)
+      .orderBy("post.created_at", "DESC")
+      .getMany();
+    res
+      .status(200)
+      .json({ data: posts, message: "Posts Successfully Retrieved" });
+  } catch (error) {
+    const errors = {
+      status: CustomError.getStatusCode(error),
+      message: CustomError.getMessage(error),
+    };
+    next(errors);
+  }
+}
+
 async function addLikeToPost(
   req: CustomRequest,
   res: Response,
@@ -232,4 +273,11 @@ export async function getAllComments(
   }
 }
 
-export default { create, getAll, addLikeToPost, addComment, getAllComments };
+export default {
+  create,
+  getAll,
+  addLikeToPost,
+  addComment,
+  getAllComments,
+  getAllPostsById,
+};

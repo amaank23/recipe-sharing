@@ -188,4 +188,43 @@ router.post("/:postId/comments", authMiddleware, PostController.addComment);
  */
 router.get("/:postId/comments", authMiddleware, PostController.getAllComments);
 
+/**
+ * @openapi
+ *  components:
+ *    securitySchemes:
+ *      bearerAuth:
+ *        type: http
+ *        scheme: bearer
+ *        bearerFormat: JWT
+ * '/api/posts/users/{id}':
+ *  get:
+ *     tags:
+ *     - Posts
+ *     summary: Get posts by userId
+ *     parameters:
+ *          - in: path
+ *            name: id
+ *            schema:
+ *              type: string
+ *            required: true
+ *          - in: query
+ *            name: page
+ *            schema:
+ *              type: integer
+ *            required: true
+ *          - in: query
+ *            name: limit
+ *            schema:
+ *              type: integer
+ *            required: true
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *      200:
+ *        description: Success
+ *      500:
+ *        description: Server Error
+ */
+router.get("/users/:id", authMiddleware, PostController.getAllPostsById);
+
 export default router;
