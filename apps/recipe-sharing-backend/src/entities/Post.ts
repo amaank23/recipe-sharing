@@ -6,11 +6,14 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  OneToOne,
+  JoinColumn,
 } from "typeorm";
 import User from "./User";
 import PostLikes from "./PostLikes";
 import PostImages from "./PostImages";
 import PostComments from "./PostComments";
+import Recipe from "./Recipe";
 @Entity()
 export class Post {
   @PrimaryGeneratedColumn("uuid")
@@ -18,6 +21,13 @@ export class Post {
 
   @Column({ nullable: true })
   content: string;
+
+  @Column({
+    type: "enum",
+    enum: ["normal", "recipe"],
+    default: "normal",
+  })
+  postType: "normal" | "recipe";
 
   @ManyToOne(() => User, (user) => user.id)
   user: User;
@@ -30,6 +40,10 @@ export class Post {
 
   @OneToMany(() => PostComments, (postComments) => postComments.post)
   postComments: PostComments[];
+
+  @OneToOne(() => Recipe, (recipe) => recipe.post)
+  @JoinColumn()
+  recipe: Recipe;
 
   @CreateDateColumn({
     type: "timestamp",

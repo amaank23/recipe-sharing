@@ -18,4 +18,8 @@ export default {
     getAllUsers: "users",
     getUserById: (userId) => `users/${userId}`,
   },
+  Friends: {
+    sendFriendRequest: "friends/request",
+    acceptFriendRequest: "friends/accept",
+  },
 };

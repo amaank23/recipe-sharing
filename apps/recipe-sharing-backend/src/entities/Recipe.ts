@@ -6,9 +6,11 @@ import {
   UpdateDateColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
 } from "typeorm";
 import User from "./User";
 import Ingredient from "./Ingredient";
+import Post from "./Post";
 @Entity()
 export class Recipe {
   @PrimaryGeneratedColumn("uuid")
@@ -27,6 +29,9 @@ export class Recipe {
     cascade: true,
   })
   ingredients: Ingredient[];
+
+  @OneToOne(() => Post, (post) => post.recipe)
+  post: Post;
 
   @CreateDateColumn({
     type: "timestamp",

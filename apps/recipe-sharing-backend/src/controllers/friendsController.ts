@@ -3,6 +3,7 @@ import { FriendRequestRepository } from "../repository/friendRequest.repository"
 import CustomError from "../utils/error";
 import { FriendsRepository } from "../repository/friends.repository";
 import { CustomRequest } from "../middlewares/authMiddleware";
+import { ProfileRepository } from "../repository/profile.repository";
 
 const sendFriendRequest = async (
   req: Request,
@@ -26,7 +27,7 @@ const sendFriendRequest = async (
 };
 
 const acceptFriendRequest = async (
-  req: Request,
+  req: CustomRequest,
   res: Response,
   next: NextFunction
 ) => {
@@ -35,13 +36,37 @@ const acceptFriendRequest = async (
     await FriendRequestRepository.createQueryBuilder()
       .update()
       .set({ status: "accepted" })
-      .where("sender = :sender_id", sender_id)
-      .andWhere("receiver = :receiver_id", receiver_id)
+      .where("sender = :sender_id", { sender_id })
+      .andWhere("receiver = :receiver_id", { receiver_id })
       .execute();
     const friends = FriendsRepository.create();
     friends.user1 = sender_id;
     friends.user2 = receiver_id;
     await FriendsRepository.save(friends);
+
+    const senderProfile = await ProfileRepository.findOne({
+      where: { user: { id: sender_id } },
+    });
+    const receiverProfile = await ProfileRepository.findOne({
+      where: { user: { id: receiver_id } },
+    });
+
+    const newSenderFriendsCounte = senderProfile.friendsCount + 1;
+    const newRecieverFriendsCounte = receiverProfile.friendsCount + 1;
+
+    await ProfileRepository.update(
+      { id: receiverProfile.id },
+      { friendsCount: newRecieverFriendsCounte }
+    );
+    await ProfileRepository.update(
+      { id: senderProfile.id },
+      { friendsCount: newSenderFriendsCounte }
+    );
+    req.io.emit(`friends-count-update-${sender_id}`, newSenderFriendsCounte);
+    req.io.emit(
+      `friends-count-update-${receiver_id}`,
+      newRecieverFriendsCounte
+    );
     res.status(200).send({ message: "Friend request accepted" });
   } catch (error) {
     const errors = {

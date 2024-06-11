@@ -221,9 +221,8 @@ export async function addComment(
 
     const newlyAddedComment = await PostCommentsRepository.findOne({
       where: { id: newCommentId },
+      relations: { user: { profile: true } },
     });
-    const user = await UserRepository.findOne({ where: { id: userId } });
-    newlyAddedComment.user = user;
     io.emit(`new-comment-${post.id}`, newlyAddedComment);
     res.status(201).json({
       message: "Comment Added Successfully!",
@@ -259,6 +258,7 @@ export async function getAllComments(
     )
       .where("postComments.postId = :postId", { postId })
       .leftJoinAndSelect("postComments.user", "User")
+      .leftJoinAndSelect("User.profile", "Profile")
       .orderBy("postComments.created_at", "DESC")
       .getMany();
     res

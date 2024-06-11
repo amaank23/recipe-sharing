@@ -42,7 +42,12 @@ export default PostComments;
 function Comment({ comment, user }) {
   return (
     <div className="flex gap-3 items-center">
-      <div className="bg-black rounded-full w-[32px] h-[32px]" />
+      <div className="bg-black rounded-full w-[32px] h-[32px] overflow-hidden">
+        <img
+          src={user?.profile?.profileImgUrl || "https://placehold.co/32x32"}
+          alt=""
+        />
+      </div>
       <div className="flex flex-col bg-[#F0F2F5] p-2 rounded-lg">
         <h4 className="font-medium">{`${user.firstName} ${user.lastName}`}</h4>
         <p>{comment}</p>
