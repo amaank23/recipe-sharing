@@ -4,7 +4,7 @@ import { getAllRecipesApi } from "../../redux/api/Recipe";
 import { useDispatch, useSelector } from "react-redux";
 import { useToggle } from "./../../utils/hooks/useToggle";
 import AddReceipeModal from "./../Receipes/AddReceipeModal";
-const RecipeSelect = () => {
+const RecipeSelect = ({ onPostRecipeChange }) => {
   const [recipeModal, toggle] = useToggle();
   const dispatch = useDispatch();
   const getAllRecipes = useSelector((state) => state.getAllRecipes);
@@ -29,6 +29,7 @@ const RecipeSelect = () => {
         className="h-[41px] w-full mt-2"
         id="recipeSelect"
         options={recipeOptions || []}
+        onChange={(value) => onPostRecipeChange(value)}
       />
     </div>
   );

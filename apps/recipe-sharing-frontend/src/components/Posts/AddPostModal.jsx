@@ -7,17 +7,22 @@ import CustomButton from "../Button/CustomButton";
 import { addPostApi } from "../../redux/api/Posts";
 import { useDispatch, useSelector } from "react-redux";
 import RecipeSelect from "./RecipeSelect";
+import { errorMessage } from "../../utils/message";
 const AddPostModal = ({ open, close }) => {
   const [postType, setPostType] = useState("normal");
   const [post, setPost] = useState({
     content: "",
     postImages: [],
     imagesPreviews: [],
+    recipeId: null,
   });
   const addPost = useSelector((state) => state.addPost);
   const dispatch = useDispatch();
   function onPostContentChange(e) {
     setPost((prev) => ({ ...prev, content: e.target.value }));
+  }
+  function onPostRecipeChange(recipeId) {
+    setPost((prev) => ({ ...prev, recipeId }));
   }
   function onImagesUpload(e) {
     const files = e.target.files;
@@ -40,6 +45,10 @@ const AddPostModal = ({ open, close }) => {
   }
   function handlePostCreate() {
     const formData = new FormData();
+    if (postType === "recipe" && post.recipeId === null) {
+      errorMessage("Please select recipe.");
+      return;
+    }
     if (post.content) {
       formData.append("postContent", post.content);
     }
@@ -47,6 +56,9 @@ const AddPostModal = ({ open, close }) => {
       for (const image of post.postImages) {
         formData.append("images", image);
       }
+    }
+    if (post.recipeId) {
+      formData.append("recipeId", post.recipeId);
     }
     addPostApi(dispatch, formData, onSuccess);
   }
@@ -84,7 +96,9 @@ const AddPostModal = ({ open, close }) => {
           />
         </div>
       </div>
-      {postType === "recipe" && <RecipeSelect />}
+      {postType === "recipe" && (
+        <RecipeSelect onPostRecipeChange={onPostRecipeChange} />
+      )}
 
       <div className="flex items-center mb-5 gap-2">
         <Checkbox
@@ -112,7 +126,11 @@ const AddPostModal = ({ open, close }) => {
       <div>
         <CustomButton
           loading={addPost.loading}
-          disabled={!post.content || post.postImages === 0}
+          disabled={
+            !post.content &&
+            post.postImages.length === 0 &&
+            post.recipeId === null
+          }
           onClick={handlePostCreate}
         >
           Post
