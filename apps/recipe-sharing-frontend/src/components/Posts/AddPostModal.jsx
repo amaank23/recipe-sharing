@@ -59,6 +59,7 @@ const AddPostModal = ({ open, close }) => {
     }
     if (post.recipeId) {
       formData.append("recipeId", post.recipeId);
+      formData.append("postType", postType);
     }
     addPostApi(dispatch, formData, onSuccess);
   }
