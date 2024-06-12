@@ -22,4 +22,8 @@ export default {
     sendFriendRequest: "friends/request",
     acceptFriendRequest: "friends/accept",
   },
+  Recipe: {
+    getAllRecipes: "recipes",
+    addRecipe: "recipes",
+  },
 };

@@ -1,4 +1,4 @@
-import { Modal } from "antd";
+import { Checkbox, Modal } from "antd";
 import React, { useState } from "react";
 import UserIcon from "./../../assets/user-1.png";
 import ImageUploadIcon from "./../../assets/image-upload-icon.png";
@@ -6,7 +6,9 @@ import PostPreview from "./PostPreview";
 import CustomButton from "../Button/CustomButton";
 import { addPostApi } from "../../redux/api/Posts";
 import { useDispatch, useSelector } from "react-redux";
+import RecipeSelect from "./RecipeSelect";
 const AddPostModal = ({ open, close }) => {
+  const [postType, setPostType] = useState("normal");
   const [post, setPost] = useState({
     content: "",
     postImages: [],
@@ -81,6 +83,23 @@ const AddPostModal = ({ open, close }) => {
             onChange={onImagesUpload}
           />
         </div>
+      </div>
+      {postType === "recipe" && <RecipeSelect />}
+
+      <div className="flex items-center mb-5 gap-2">
+        <Checkbox
+          id="shareRecipe"
+          onClick={(e) => {
+            if (e.target.checked) {
+              setPostType("recipe");
+            } else {
+              setPostType("normal");
+            }
+          }}
+        />
+        <label htmlFor="shareRecipe" className="cursor-pointer">
+          Share Recipe
+        </label>
       </div>
       {post.content || post.postImages.length ? (
         <>

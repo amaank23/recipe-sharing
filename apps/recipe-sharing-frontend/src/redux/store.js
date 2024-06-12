@@ -15,6 +15,8 @@ import getAllPostsByIdSlice from "./slices/Posts/getAllPostsByIdSlice";
 import sendFriendRequestSlice from "./slices/Friends/sendFriendRequestSlice";
 import acceptFriendRequestSlice from "./slices/Friends/acceptFriendRequestSlice";
 import rejectFriendRequestSlice from "./slices/Friends/rejectFriendRequestSlice";
+import getAllRecipesSlice from "./slices/Recipe/getAllRecipesSlice";
+import addRecipeSlice from "./slices/Recipe/addRecipeSlice";
 
 const authSlices = {
   auth: authSlice,
@@ -45,12 +47,18 @@ const friendsSlices = {
   rejectFriendRequest: rejectFriendRequestSlice,
 };
 
+const recipeSlices = {
+  getAllRecipes: getAllRecipesSlice,
+  addRecipe: addRecipeSlice,
+};
+
 const rootSlices = combineReducers({
   ...authSlices,
   ...postSlices,
   ...profileSlices,
   ...usersSlices,
   ...friendsSlices,
+  ...recipeSlices,
 });
 
 export const store = configureStore({
