@@ -9,6 +9,7 @@ import PostLikes from "../entities/PostLikes";
 import { PostCommentsRepository } from "../repository/postComments.repository";
 import { UserRepository } from "../repository/user.repository";
 import { ProfileRepository } from "../repository/profile.repository";
+import { RecipeRepository } from "../repository/recipe.repository";
 
 async function create(req: CustomRequest, res: Response, next: NextFunction) {
   try {
@@ -19,6 +20,15 @@ async function create(req: CustomRequest, res: Response, next: NextFunction) {
     if ("postContent" in req.body) {
       post.content = req.body.postContent;
     }
+
+    if ("recipeId" in req.body) {
+      const recipe = await RecipeRepository.findOne({
+        where: { id: req.body.recipeId },
+      });
+      post.recipe = recipe;
+      post.postType = req.body.postType;
+    }
+
     await PostRepository.save(post);
 
     if (req.files && "images" in req.files) {
