@@ -14,15 +14,15 @@ const AddPostModal = ({ open, close }) => {
     content: "",
     postImages: [],
     imagesPreviews: [],
-    recipeId: null,
+    recipe: null,
   });
   const addPost = useSelector((state) => state.addPost);
   const dispatch = useDispatch();
   function onPostContentChange(e) {
     setPost((prev) => ({ ...prev, content: e.target.value }));
   }
-  function onPostRecipeChange(recipeId) {
-    setPost((prev) => ({ ...prev, recipeId }));
+  function onPostRecipeChange(recipe) {
+    setPost((prev) => ({ ...prev, recipe: JSON.parse(recipe) }));
   }
   function onImagesUpload(e) {
     const files = e.target.files;
@@ -57,8 +57,8 @@ const AddPostModal = ({ open, close }) => {
         formData.append("images", image);
       }
     }
-    if (post.recipeId) {
-      formData.append("recipeId", post.recipeId);
+    if (post.recipe) {
+      formData.append("recipeId", post.recipe.id);
       formData.append("postType", postType);
     }
     addPostApi(dispatch, formData, onSuccess);
@@ -109,6 +109,7 @@ const AddPostModal = ({ open, close }) => {
               setPostType("recipe");
             } else {
               setPostType("normal");
+              setPost((prev) => ({ ...prev, recipe: null }));
             }
           }}
         />
@@ -116,10 +117,14 @@ const AddPostModal = ({ open, close }) => {
           Share Recipe
         </label>
       </div>
-      {post.content || post.postImages.length ? (
+      {post.content || post.postImages.length || post.recipe ? (
         <>
           <h4 className="text-center font-bold mb-6">Post Preview</h4>
-          <PostPreview text={post.content} images={post.imagesPreviews} />
+          <PostPreview
+            text={post.content}
+            images={post.imagesPreviews}
+            recipe={post.recipe}
+          />
         </>
       ) : (
         ""

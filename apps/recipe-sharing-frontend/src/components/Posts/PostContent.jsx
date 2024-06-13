@@ -1,9 +1,28 @@
 import { PropTypes } from "prop-types";
 
-const PostContent = ({ text, images }) => {
+const PostContent = ({ text, images, recipe }) => {
   return (
     <div className="mt-6">
       <p className="text-sm text-[#2D3139] break-words">{text}</p>
+      {recipe && (
+        <div className="">
+          <h4 className="text-lg mb-4">
+            <span className="font-bold">Recipe:</span> {recipe?.name}
+          </h4>
+          <p className="mb-4">{recipe?.description}</p>
+          <h4 className="font-bold text-lg">Ingredients</h4>
+          <ul className="mt-2 flex flex-col gap-1">
+            {recipe?.ingredients?.map((item, i) => {
+              return (
+                <div className="flex items-center gap-3">
+                  <div className="w-1 h-1 bg-yellow-500 rounded-full" />
+                  <li key={item.id} className="text-lg">{`${item.name}`}</li>
+                </div>
+              );
+            })}
+          </ul>
+        </div>
+      )}
       {images?.length > 0 && (
         <>
           {images.length === 1 && (

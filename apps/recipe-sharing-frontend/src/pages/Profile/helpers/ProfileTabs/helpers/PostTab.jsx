@@ -31,6 +31,7 @@ const PostTab = () => {
               isThisPostLiked={item.postLikes?.length > 0}
               user={item.user}
               createdAt={item.created_at}
+              recipe={item.recipe}
             />
           );
         })}

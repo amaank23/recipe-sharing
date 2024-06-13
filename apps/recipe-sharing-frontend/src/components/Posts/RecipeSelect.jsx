@@ -14,7 +14,7 @@ const RecipeSelect = ({ onPostRecipeChange }) => {
   }, [addRecipe.data]);
   const recipeOptions = getAllRecipes.data?.data?.map((item) => ({
     label: item.name,
-    value: item.id,
+    value: JSON.stringify(item),
   }));
   return (
     <div className="mb-4">

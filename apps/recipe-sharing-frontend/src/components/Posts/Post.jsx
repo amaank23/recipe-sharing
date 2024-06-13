@@ -16,6 +16,7 @@ const Post = ({
   isThisPostLiked,
   user,
   createdAt,
+  recipe,
 }) => {
   const [isCommentOn, setIsCommentOn] = useState(false);
   const [commentCount, setCommentCount] = useState(commentsCount);
@@ -28,7 +29,7 @@ const Post = ({
   return (
     <div className="bg-white p-4 rounded-xl mb-4">
       <PostUser user={user} createdAt={createdAt} />
-      <PostContent text={text} images={images} />
+      <PostContent text={text} images={images} recipe={recipe} />
       <Divider className="mb-4" />
       <PostActions
         commentsCount={commentCount}
