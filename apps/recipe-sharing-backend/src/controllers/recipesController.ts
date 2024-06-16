@@ -5,6 +5,7 @@ import { IngredientRepository } from "../repository/ingredient.repository";
 import Ingredient from "../entities/Ingredient";
 import { CustomRequest } from "../middlewares/authMiddleware";
 import { UserRepository } from "../repository/user.repository";
+import { ProfileRepository } from "../repository/profile.repository";
 
 const addNewRecipeAndIngredients = async (
   req: CustomRequest,
@@ -14,7 +15,10 @@ const addNewRecipeAndIngredients = async (
   const { name, description, ingredients } = req.body;
   const userId = req.user.data.id;
   try {
-    const user = await UserRepository.findOne({ where: { id: userId } });
+    const user = await UserRepository.findOne({
+      where: { id: userId },
+      relations: { profile: true },
+    });
     const newRecipe = RecipeRepository.create();
     newRecipe.name = name;
     newRecipe.description = description;
@@ -28,6 +32,10 @@ const addNewRecipeAndIngredients = async (
     });
     newRecipe.ingredients = newIngredients;
     await RecipeRepository.save(newRecipe);
+    await ProfileRepository.update(
+      { id: user.profile.id },
+      { recipesCount: user.profile.recipesCount + 1 }
+    );
     res
       .status(201)
       .json({ message: "Recipe Created Successfully!", data: newRecipe });

@@ -227,4 +227,40 @@ router.get("/:postId/comments", authMiddleware, PostController.getAllComments);
  */
 router.get("/users/:id", authMiddleware, PostController.getAllPostsById);
 
+/**
+ * @openapi
+ *  components:
+ *    securitySchemes:
+ *      bearerAuth:
+ *        type: http
+ *        scheme: bearer
+ *        bearerFormat: JWT
+ * '/api/posts/friends':
+ *  get:
+ *     tags:
+ *     - Posts
+ *     summary: Get all posts of loggedIn user friends
+ *     parameters:
+ *          - in: query
+ *            name: page
+ *            schema:
+ *              type: integer
+ *            required: true
+ *          - in: query
+ *            name: limit
+ *            schema:
+ *              type: integer
+ *            required: true
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *      200:
+ *        description: get All Posts
+ *      400:
+ *        description: Query Parameters Empty
+ *      500:
+ *        description: Server Error
+ */
+router.get("/friends", authMiddleware, PostController.getAllFriendsPosts);
+
 export default router;

@@ -10,6 +10,7 @@ import { PostCommentsRepository } from "../repository/postComments.repository";
 import { UserRepository } from "../repository/user.repository";
 import { ProfileRepository } from "../repository/profile.repository";
 import { RecipeRepository } from "../repository/recipe.repository";
+import { FriendsRepository } from "../repository/friends.repository";
 
 async function create(req: CustomRequest, res: Response, next: NextFunction) {
   try {
@@ -287,6 +288,61 @@ export async function getAllComments(
   }
 }
 
+async function getAllFriendsPosts(
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { page, limit } = req.query;
+    const itemsToSkip = (+page - 1) * +limit;
+    const userId = req.user.data.id;
+    const friendsPosts = await PostRepository.createQueryBuilder("post")
+      .leftJoinAndSelect("post.postImages", "postImages")
+      .loadRelationCountAndMap("post.commentsCount", "post.postComments")
+      .loadRelationCountAndMap("post.likesCount", "post.postLikes")
+      .leftJoinAndSelect("post.recipe", "Recipe")
+      .leftJoinAndSelect("post.user", "User")
+      .leftJoinAndSelect("User.profile", "UserProfile")
+      .where((qb) => {
+        const subQuery = qb
+          .subQuery()
+          .select("friend.user2Id")
+          .from("friend", "friend")
+          .where("friend.user1Id = :userId")
+          .getQuery();
+        return `post.userId IN ${subQuery}`;
+      })
+      .setParameter("userId", userId)
+      .orWhere((qb) => {
+        const subQuery = qb
+          .subQuery()
+          .select("friend.user1Id")
+          .from("friend", "friend")
+          .where("friend.user2Id = :userId")
+          .getQuery();
+        return `post.userId IN ${subQuery}`;
+      })
+      .setParameter("userId", userId)
+      .limit(+limit)
+      .offset(itemsToSkip)
+      .orderBy("post.created_at", "DESC")
+      .getMany();
+
+    res
+      .status(200)
+      .json({ message: "Posts Successfully Retrieved", data: friendsPosts });
+  } catch (error) {
+    console.log(error);
+
+    const errors = {
+      status: CustomError.getStatusCode(error),
+      message: CustomError.getMessage(error),
+    };
+    next(errors);
+  }
+}
+
 export default {
   create,
   getAll,
@@ -294,4 +350,5 @@ export default {
   addComment,
   getAllComments,
   getAllPostsById,
+  getAllFriendsPosts,
 };
