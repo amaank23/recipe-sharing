@@ -30,7 +30,7 @@ export class Recipe {
   })
   ingredients: Ingredient[];
 
-  @OneToOne(() => Post, (post) => post.recipe)
+  @OneToMany(() => Post, (post) => post.recipe)
   post: Post;
 
   @CreateDateColumn({

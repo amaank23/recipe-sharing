@@ -41,7 +41,7 @@ export class Post {
   @OneToMany(() => PostComments, (postComments) => postComments.post)
   postComments: PostComments[];
 
-  @OneToOne(() => Recipe, (recipe) => recipe.post)
+  @ManyToOne(() => Recipe, (recipe) => recipe.post)
   @JoinColumn()
   recipe: Recipe;
 
