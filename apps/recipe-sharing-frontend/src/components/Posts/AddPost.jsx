@@ -7,7 +7,7 @@ const AddPost = () => {
   const [open, toggle] = useToggle();
   return (
     <>
-      <AddPostModal open={open} close={toggle} />
+      {open && <AddPostModal open={open} close={toggle} />}
       <div
         className="mb-[1rem] p-4 relative bg-white rounded-xl cursor-pointer"
         onClick={toggle}
