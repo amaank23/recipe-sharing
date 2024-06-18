@@ -35,6 +35,35 @@ router.get("/", authMiddleware, UserController.getAllUsers);
  *        type: http
  *        scheme: bearer
  *        bearerFormat: JWT
+ * '/api/users/search':
+ *  get:
+ *     tags:
+ *     - Users
+ *     summary: Search users and posts
+ *     parameters:
+ *          - in: query
+ *            name: query
+ *            schema:
+ *              type: string
+ *            required: true
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *      200:
+ *        description: Success
+ *      500:
+ *        description: Server Error
+ */
+router.get("/search", authMiddleware, UserController.searchUsersPostsAndRecipe);
+
+/**
+ * @openapi
+ *  components:
+ *    securitySchemes:
+ *      bearerAuth:
+ *        type: http
+ *        scheme: bearer
+ *        bearerFormat: JWT
  * '/api/users/{id}':
  *  get:
  *     tags:

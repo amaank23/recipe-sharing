@@ -13,6 +13,11 @@ import {
   commentOnPostSuccess,
 } from "../../slices/Posts/commentOnPostSlice";
 import {
+  getAllFriendsPosts,
+  getAllFriendsPostsFailure,
+  getAllFriendsPostsSuccess,
+} from "../../slices/Posts/getAllFriendsPostsSlice";
+import {
   getAllPostsById,
   getAllPostsByIdFailure,
   getAllPostsByIdSuccess,
@@ -116,5 +121,17 @@ export async function getAllPostsByIdApi(dispatch, pageLimit, userId) {
   } catch (error) {
     handleApiErrors(error, dispatch);
     dispatch(getAllPostsByIdFailure(error?.response?.data));
+  }
+}
+export async function getAllFriendsPostsApi(dispatch, pageLimit) {
+  try {
+    dispatch(getAllFriendsPosts());
+    const res = await getRequest(
+      `${endpoints.Posts.getAllFriendsPosts}?page=${pageLimit.page}&limit=${pageLimit.limit}`
+    );
+    dispatch(getAllFriendsPostsSuccess(res.data));
+  } catch (error) {
+    handleApiErrors(error, dispatch);
+    dispatch(getAllFriendsPostsFailure(error?.response?.data));
   }
 }

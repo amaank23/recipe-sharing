@@ -10,6 +10,7 @@ export default {
     likeUnlikePost: (postId) => `posts/${postId}/likes`,
     commentOnPost: (postId) => `posts/${postId}/comments`,
     getAllPostsById: (userId) => `posts/users/${userId}`,
+    getAllFriendsPosts: "posts/friends",
   },
   Profile: {
     EditProfile: (profileId) => `profiles/${profileId}`,

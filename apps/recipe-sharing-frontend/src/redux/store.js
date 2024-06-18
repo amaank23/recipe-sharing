@@ -17,6 +17,7 @@ import acceptFriendRequestSlice from "./slices/Friends/acceptFriendRequestSlice"
 import rejectFriendRequestSlice from "./slices/Friends/rejectFriendRequestSlice";
 import getAllRecipesSlice from "./slices/Recipe/getAllRecipesSlice";
 import addRecipeSlice from "./slices/Recipe/addRecipeSlice";
+import getAllFriendsPostsSlice from "./slices/Posts/getAllFriendsPostsSlice";
 
 const authSlices = {
   auth: authSlice,
@@ -40,6 +41,7 @@ const postSlices = {
   commentOnPost: commentOnPostSlice,
   getCommentsByPostId: getCommentsByPostIdSlice,
   getAllPostsById: getAllPostsByIdSlice,
+  getAllFriendsPosts: getAllFriendsPostsSlice,
 };
 const friendsSlices = {
   sendFriendRequest: sendFriendRequestSlice,

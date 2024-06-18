@@ -301,6 +301,12 @@ async function getAllFriendsPosts(
       .leftJoinAndSelect("post.postImages", "postImages")
       .loadRelationCountAndMap("post.commentsCount", "post.postComments")
       .loadRelationCountAndMap("post.likesCount", "post.postLikes")
+      .leftJoinAndSelect(
+        "post.postLikes",
+        "postLikes",
+        "postLikes.userId = :loggedInUserId",
+        { loggedInUserId: userId }
+      )
       .leftJoinAndSelect("post.recipe", "Recipe")
       .leftJoinAndSelect("post.user", "User")
       .leftJoinAndSelect("User.profile", "UserProfile")

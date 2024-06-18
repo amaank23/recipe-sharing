@@ -1,10 +1,22 @@
 import dayjs from "dayjs";
 import UserIcon from "./../../assets/user-1.png";
+import { useNavigate } from "react-router-dom";
+import { getFromStorage } from "../../utils/storage";
 
 const PostUser = ({ user, createdAt }) => {
+  const navigate = useNavigate();
+  const loggedInUser = getFromStorage("user");
+  function onUserClick() {
+    if (user.id !== loggedInUser.id) {
+      navigate(`/profile/${user.id}`);
+    }
+  }
   return (
     <div className="flex justify-between items-start">
-      <div className="flex gap-4 items-center">
+      <div
+        className="flex gap-4 items-center cursor-pointer"
+        onClick={onUserClick}
+      >
         <div className="w-[42px] h-[42px] overflow-hidden rounded-full">
           <img
             src={user?.profile?.profileImgUrl || "https://placehold.co/42x42"}
