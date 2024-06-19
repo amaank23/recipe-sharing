@@ -10,6 +10,8 @@ import { FriendRequest } from "./entities/FriendRequest";
 import { Friend } from "./entities/Friend";
 import Ingredient from "./entities/Ingredient";
 import Recipe from "./entities/Recipe";
+import { Chat } from "./entities/Chat";
+import { Message } from "./entities/Message";
 
 dotenv.config();
 export const myDataSource = new DataSource({
@@ -30,6 +32,8 @@ export const myDataSource = new DataSource({
     Friend,
     Ingredient,
     Recipe,
+    Chat,
+    Message,
   ],
   logging: true,
   synchronize: false,
