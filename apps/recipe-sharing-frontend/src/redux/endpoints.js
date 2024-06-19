@@ -18,6 +18,7 @@ export default {
   Users: {
     getAllUsers: "users",
     getUserById: (userId) => `users/${userId}`,
+    getSearchResults: "users/search",
   },
   Friends: {
     sendFriendRequest: "friends/request",

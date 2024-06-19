@@ -117,7 +117,10 @@ async function searchUsersPostsAndRecipe(
     const querySearch = query as string;
 
     if (!querySearch) {
-      throw new CustomError("Query parameter is required", 400).errorInstance();
+      res
+        .status(200)
+        .json({ message: "Successfully Get", data: { posts: [], users: [] } });
+      return;
     }
 
     let firstName = null;
@@ -138,6 +141,9 @@ async function searchUsersPostsAndRecipe(
         { firstName: ILike(`%${querySearch}%`) },
         { lastName: ILike(`%${querySearch}%`) },
       ],
+      relations: {
+        profile: true,
+      },
     });
 
     // Fetch posts matching the query

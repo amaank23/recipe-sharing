@@ -7,6 +7,11 @@ import {
   getAllUsersSuccess,
 } from "../../slices/Users/getAllUsersSlice";
 import {
+  getSearchResults,
+  getSearchResultsFailure,
+  getSearchResultsSuccess,
+} from "../../slices/Users/getSearchResultsSlice";
+import {
   getUserById,
   getUserByIdFailure,
   getUserByIdSuccess,
@@ -31,5 +36,17 @@ export async function getUserByIdApi(dispatch, userId) {
   } catch (error) {
     handleApiErrors(error, dispatch);
     dispatch(getUserByIdFailure(error?.response?.data));
+  }
+}
+export async function getSearchResultsApi(dispatch, query) {
+  try {
+    dispatch(getSearchResults());
+    const res = await getRequest(
+      `${endpoints.Users.getSearchResults}?query=${query}`
+    );
+    dispatch(getSearchResultsSuccess(res.data));
+  } catch (error) {
+    handleApiErrors(error, dispatch);
+    dispatch(getSearchResultsFailure(error?.response?.data));
   }
 }

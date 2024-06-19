@@ -11,7 +11,7 @@ const ProfileOther = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     getUserByIdApi(dispatch, params.id);
-  }, []);
+  }, [params]);
   return (
     <div>
       <Row gutter={16}>

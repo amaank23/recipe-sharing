@@ -18,7 +18,7 @@ const PostTab = () => {
   const addPost = useSelector((state) => state.addPost);
   useEffect(() => {
     getAllPostsByIdApi(dispatch, pageLimit, params.id);
-  }, [addPost.data, EditProfile?.data]);
+  }, [addPost.data, EditProfile?.data, params]);
   return (
     <>
       {getAllPostsById?.data?.data?.length > 0 &&

@@ -18,6 +18,7 @@ import rejectFriendRequestSlice from "./slices/Friends/rejectFriendRequestSlice"
 import getAllRecipesSlice from "./slices/Recipe/getAllRecipesSlice";
 import addRecipeSlice from "./slices/Recipe/addRecipeSlice";
 import getAllFriendsPostsSlice from "./slices/Posts/getAllFriendsPostsSlice";
+import getSearchResultsSlice from "./slices/Users/getSearchResultsSlice";
 
 const authSlices = {
   auth: authSlice,
@@ -32,6 +33,7 @@ const profileSlices = {
 const usersSlices = {
   getAllUsers: getAllUsersSlice,
   getUserById: getUserByIdSlice,
+  getSearchResults: getSearchResultsSlice,
 };
 
 const postSlices = {
