@@ -10,8 +10,8 @@ import { Message } from "./Message";
 
 @Entity()
 export class Chat {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
 
   @ManyToOne(() => User)
   user1: User;
