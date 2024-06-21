@@ -52,13 +52,50 @@ app.use("/api/chats", ChatsRoutes);
 
 app.use(errorMiddleware);
 
+const onlineUsers = new Map();
+
 // Handle the connection event
 io.on("connection", (socket) => {
   console.log("a user connected");
 
-  // You can set up other events here or in separate files
+  // Handle user joining (e.g., after login)
+  socket.on("join", (userId) => {
+    onlineUsers.set(userId, socket.id);
+    io.emit("userOnline", userId);
+
+    // Emit current online users to the newly joined user
+    socket.emit("currentOnlineUsers", Array.from(onlineUsers.keys()));
+  });
+  socket.on("join-chat", (chatId) => {
+    // Add the user to the chat room
+    socket.join(chatId);
+  });
+  socket.on("sendMessage", async (message) => {
+    io.to(message.chat.id).emit("newMessage", message);
+  });
+
+  // after user logged out
+  socket.on("leave", () => {
+    for (const [userId, socketId] of onlineUsers.entries()) {
+      if (socketId === socket.id) {
+        onlineUsers.delete(userId);
+        io.emit("userOffline", userId);
+        break;
+      }
+    }
+    socket.emit("currentOnlineUsers", Array.from(onlineUsers.keys()));
+  });
 
   socket.on("disconnect", () => {
+    for (const [userId, socketId] of onlineUsers.entries()) {
+      if (socketId === socket.id) {
+        onlineUsers.delete(userId);
+        io.emit("userOffline", userId);
+        break;
+      }
+    }
+    // Emit current online users to the  user
+    socket.emit("currentOnlineUsers", Array.from(onlineUsers.keys()));
     console.log("user disconnected");
   });
 });

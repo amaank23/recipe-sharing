@@ -51,6 +51,7 @@ async function sendMessage(req: Request, res: Response, next: NextFunction) {
     message.sender.id = senderId;
     message.content = content;
     await MessageRepository.save(message);
+    req.socket.emit("sendMessage", message);
     res.status(201).json({ message: "Chat created.", data: message });
   } catch (error) {
     const errors = {

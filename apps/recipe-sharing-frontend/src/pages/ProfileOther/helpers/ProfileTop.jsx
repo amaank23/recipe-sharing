@@ -73,12 +73,17 @@ const ProfileTop = () => {
       </button>
     ),
     friends: (
-      <button
-        disabled
-        className="text-white bg-[#F85F35] border border-[#F85F35] hover:bg-[#f85f35c8] transition-all rounded-lg flex gap-1 py-[10px] px-4 items-center"
-      >
-        Friends
-      </button>
+      <>
+        <button className="text-white bg-[#F85F35] border border-[#F85F35] hover:bg-[#f85f35c8] transition-all rounded-lg flex gap-1 py-[10px] px-4 items-center">
+          Send a message
+        </button>
+        <button
+          disabled
+          className="text-white bg-[#F85F35] border border-[#F85F35] hover:bg-[#f85f35c8] transition-all rounded-lg flex gap-1 py-[10px] px-4 items-center"
+        >
+          Friends
+        </button>
+      </>
     ),
   };
   useEffect(() => {

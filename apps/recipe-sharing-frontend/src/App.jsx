@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import SignUp from "./pages/SignUp/SignUp";
 import SignIn from "./pages/SignIn/SignIn";
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getFromStorage } from "./utils/storage";
 import { useDispatch, useSelector } from "react-redux";
 import { authFailure, authSuccess } from "./redux/slices/Auth/authSlice";
@@ -11,12 +11,38 @@ import Profile from "./pages/Profile/Profile";
 import { socket } from "./utils/socket";
 import ProfileOther from "./pages/ProfileOther/ProfileOther";
 import Newsfeed from "./pages/Newsfeed/Newsfeed";
+import { ChatContext } from "./utils/context/chatContext";
 
 axios.defaults.baseURL = "http://localhost:5000/api/";
 
 function App() {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.auth);
+  const [chat, setChat] = useState({
+    open: false,
+    data: {
+      user1Id: null,
+      user2Id: null,
+    },
+  });
+  function openChat(user1Id, user2Id) {
+    setChat({
+      open: true,
+      data: {
+        user1Id,
+        user2Id,
+      },
+    });
+  }
+  function closeChat() {
+    setChat({
+      open: false,
+      data: {
+        user1Id: null,
+        user2Id: null,
+      },
+    });
+  }
   useEffect(() => {
     const token = getFromStorage("token");
     const user = getFromStorage("user");
@@ -46,11 +72,20 @@ function App() {
           path="/*"
           element={
             <AuthGuard>
-              <Routes>
-                <Route path="/" element={<Newsfeed />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/profile/:id" element={<ProfileOther />} />
-              </Routes>
+              <ChatContext.Provider
+                value={{
+                  data: chat.data,
+                  open: chat.open,
+                  closeChat,
+                  openChat,
+                }}
+              >
+                <Routes>
+                  <Route path="/" element={<Newsfeed />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/profile/:id" element={<ProfileOther />} />
+                </Routes>
+              </ChatContext.Provider>
             </AuthGuard>
           }
         />
