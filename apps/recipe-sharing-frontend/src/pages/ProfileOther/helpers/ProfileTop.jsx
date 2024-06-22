@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   acceptFriendRequestApi,
@@ -6,9 +6,11 @@ import {
   sendFriendRequestApi,
 } from "../../../redux/api/Friends";
 import { getFromStorage } from "../../../utils/storage";
+import { useChat } from "../../../utils/context/chatContext";
 const ProfileTop = () => {
   const getUserById = useSelector((state) => state.getUserById);
   const dispatch = useDispatch();
+  const chatContext = useChat();
   const authUser = getFromStorage("user");
   const data = getUserById.data?.data;
   const [friendShipStatus, setFriendShipStatus] = useState(null);
@@ -74,7 +76,10 @@ const ProfileTop = () => {
     ),
     friends: (
       <>
-        <button className="text-white bg-[#F85F35] border border-[#F85F35] hover:bg-[#f85f35c8] transition-all rounded-lg flex gap-1 py-[10px] px-4 items-center">
+        <button
+          onClick={() => chatContext.openChat(1, 2)}
+          className="text-white bg-[#F85F35] border border-[#F85F35] hover:bg-[#f85f35c8] transition-all rounded-lg flex gap-1 py-[10px] px-4 items-center"
+        >
           Send a message
         </button>
         <button

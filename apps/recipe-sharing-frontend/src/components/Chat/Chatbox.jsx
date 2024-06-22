@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { RxCross1 } from "react-icons/rx";
 import { Input } from "antd";
 import { IoSend } from "react-icons/io5";
@@ -8,6 +8,7 @@ import ChatMessages from "./ChatMessages";
 import ChatInput from "./ChatInput";
 import { socket } from "../../utils/socket";
 import CustomButton from "../Button/CustomButton";
+import { useChat } from "../../utils/context/chatContext";
 
 const Chatbox = ({ toggleChatBox, visible, color }) => {
   const containerRef = useRef();
@@ -23,7 +24,7 @@ const Chatbox = ({ toggleChatBox, visible, color }) => {
     page: 1,
     limit: 10,
   });
-
+  const chatContext = useChat();
   function onSuccess() {
     setInitiationSuccess(true);
   }
@@ -149,7 +150,7 @@ const Chatbox = ({ toggleChatBox, visible, color }) => {
     >
       <div className="flex p-4 bg-primary rounded-t-lg items-center justify-between">
         <h3 className="text-lg text-white">Live Chat</h3>
-        <button>
+        <button onClick={chatContext.closeChat}>
           <RxCross1 color="#fff" size="20" />
         </button>
       </div>
