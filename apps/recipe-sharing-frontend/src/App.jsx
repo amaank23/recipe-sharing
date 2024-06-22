@@ -12,6 +12,7 @@ import { socket } from "./utils/socket";
 import ProfileOther from "./pages/ProfileOther/ProfileOther";
 import Newsfeed from "./pages/Newsfeed/Newsfeed";
 import { ChatContext } from "./utils/context/chatContext";
+import Chat from "./components/Chat/Chat";
 
 axios.defaults.baseURL = "http://localhost:5000/api/";
 
@@ -80,6 +81,7 @@ function App() {
                   openChat,
                 }}
               >
+                <Chat />
                 <Routes>
                   <Route path="/" element={<Newsfeed />} />
                   <Route path="/profile" element={<Profile />} />
