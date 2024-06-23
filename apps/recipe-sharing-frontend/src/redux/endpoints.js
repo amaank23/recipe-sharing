@@ -28,4 +28,9 @@ export default {
     getAllRecipes: "recipes",
     addRecipe: "recipes",
   },
+  Chat: {
+    createChat: "chats",
+    sendMessage: (chatId) => `chats/${chatId}/messages`,
+    getAllChatMessages: (chatId) => `chats/${chatId}/messages`,
+  },
 };

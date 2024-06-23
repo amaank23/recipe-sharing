@@ -19,6 +19,9 @@ import getAllRecipesSlice from "./slices/Recipe/getAllRecipesSlice";
 import addRecipeSlice from "./slices/Recipe/addRecipeSlice";
 import getAllFriendsPostsSlice from "./slices/Posts/getAllFriendsPostsSlice";
 import getSearchResultsSlice from "./slices/Users/getSearchResultsSlice";
+import createChatSlice from "./slices/Chat/createChatSlice";
+import getAllChatMessagesSlice from "./slices/Chat/getAllChatMessagesSlice";
+import sendMessageSlice from "./slices/Chat/sendMessageSlice";
 
 const authSlices = {
   auth: authSlice,
@@ -56,6 +59,12 @@ const recipeSlices = {
   addRecipe: addRecipeSlice,
 };
 
+const chatsSlices = {
+  createChat: createChatSlice,
+  getAllChatMessages: getAllChatMessagesSlice,
+  sendMessage: sendMessageSlice,
+};
+
 const rootSlices = combineReducers({
   ...authSlices,
   ...postSlices,
@@ -63,6 +72,7 @@ const rootSlices = combineReducers({
   ...usersSlices,
   ...friendsSlices,
   ...recipeSlices,
+  ...chatsSlices,
 });
 
 export const store = configureStore({
