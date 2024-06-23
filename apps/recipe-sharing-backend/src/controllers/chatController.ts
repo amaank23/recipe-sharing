@@ -2,16 +2,12 @@ import { NextFunction, Request, Response } from "express";
 import { ChatRepository } from "../repository/chat.repository";
 import CustomError from "../utils/error";
 import { MessageRepository } from "../repository/message.repository";
+import { CustomRequest } from "../middlewares/authMiddleware";
 
-const createChatOrReturnExistingChatAndMessages = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const createChat = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { user1Id, user2Id } = req.body;
     const chatExist = await ChatRepository.createQueryBuilder()
-      .leftJoinAndSelect("chat.messages", "message")
       .leftJoinAndSelect("chat.user1", "user1")
       .leftJoinAndSelect("chat.user2", "user2")
       .where("user1.id = :user1Id AND user2.id = :user2Id", {
@@ -45,11 +41,12 @@ const createChatOrReturnExistingChatAndMessages = async (
 async function sendMessage(req: Request, res: Response, next: NextFunction) {
   try {
     const { chatId } = req.params;
-    const { senderId, content } = req.body;
+    const { senderId, content, recieverId } = req.body;
     const message = MessageRepository.create();
     message.chat.id = chatId;
     message.sender.id = senderId;
     message.content = content;
+    message.reciever.id = recieverId;
     await MessageRepository.save(message);
     req.socket.emit("sendMessage", message);
     res.status(201).json({ message: "Chat created.", data: message });
@@ -61,5 +58,43 @@ async function sendMessage(req: Request, res: Response, next: NextFunction) {
     next(errors);
   }
 }
+async function getAllChatMessages(
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { page, limit } = req.query;
+    const { chatId } = req.params;
+    const itemsToSkip = (+page - 1) * +limit;
+    const messages = await MessageRepository.find({
+      where: {
+        chat: {
+          id: chatId as string,
+        },
+      },
+      relations: {
+        chat: true,
+        sender: true,
+        reciever: true,
+      },
+      skip: itemsToSkip,
+      take: +limit,
+    });
+    res
+      .status(201)
+      .json({ message: "Chat Messages Retrieved", data: messages });
+  } catch (error) {
+    const errors = {
+      status: CustomError.getStatusCode(error),
+      message: CustomError.getMessage(error),
+    };
+    next(errors);
+  }
+}
 
-export default { createChatOrReturnExistingChatAndMessages, sendMessage };
+export default {
+  createChat,
+  sendMessage,
+  getAllChatMessages,
+};

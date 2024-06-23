@@ -19,6 +19,9 @@ export class Message {
   @ManyToOne(() => User, (user) => user.messages)
   sender: User;
 
+  @ManyToOne(() => User, (user) => user.messages)
+  reciever: User;
+
   @Column("text")
   content: string;
 
