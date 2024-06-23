@@ -9,20 +9,25 @@ import ChatInput from "./ChatInput";
 import { socket } from "../../utils/socket";
 import CustomButton from "../Button/CustomButton";
 import { useChat } from "../../utils/context/chatContext";
+import {
+  createChatApi,
+  getAllChatMessagesApi,
+  sendMessageApi,
+} from "../../redux/api/Chat";
+import { getFromStorage } from "../../utils/storage";
 
 const Chatbox = ({ toggleChatBox, visible, color }) => {
   const containerRef = useRef();
-  const [userCode, setUserCode] = useState("");
   const dispatch = useDispatch();
   const sendChatMessage = useSelector((state) => state.sendChatMessage);
-
-  const chat = useSelector((state) => state.chat);
+  const user = getFromStorage("user");
+  const [chat, setChat] = useState(null);
   const initiateChat = useSelector((state) => state.initiateChat);
   const [isInitiationSuccess, setInitiationSuccess] = useState(false);
   const [messages, setMessages] = useState([]);
   const [pageLimit, setPageLimit] = useState({
     page: 1,
-    limit: 10,
+    limit: 6,
   });
   const chatContext = useChat();
   function onSuccess() {
@@ -46,48 +51,46 @@ const Chatbox = ({ toggleChatBox, visible, color }) => {
       return;
     }
     const body = {
-      publicConversationId: initiateChat?.data?.data?.id,
-      userCode: userCode,
-      message: message,
+      senderId: user.id,
+      recieverId:
+        chatContext?.data?.user1Id === user.id
+          ? chatContext?.data?.user2Id
+          : chatContext?.data?.user1Id,
+      content: message,
     };
-    function onSuccessInputMessage(data) {
-      onSuccessSendMessage(data);
+    function onSuccessInputMessage() {
       clearInput();
     }
+    sendMessageApi(dispatch, body, chat.id, onSuccessInputMessage);
   }
 
-  function handleClick() {
-    if (userCode) {
-      const body = {
-        userId: chat.data.id,
-        userCode: userCode,
-      };
-      initiateChatApi(dispatch, body, onSuccess);
-    } else {
-      errorMessage("Please Enter User Code");
-    }
-  }
-
-  function onSuccessGetMessages(data) {
-    if (data?.data?.items?.length) {
-      setMessages((prev) =>
-        [...[...prev].reverse(), ...data?.data?.items].reverse()
-      );
-    }
-  }
-
-  // useEffect(() => {
-  //   if (userCode && initiateChat.data && isInitiationSuccess) {
+  // function handleClick() {
+  //   if (userCode) {
   //     const body = {
-  //       id: initiateChat?.data?.data?.id,
+  //       userId: chat.data.id,
   //       userCode: userCode,
   //     };
-  //     getUserMessagesApi(dispatch, pageLimit, body, onSuccessGetMessages);
+  //     initiateChatApi(dispatch, body, onSuccess);
+  //   } else {
+  //     errorMessage("Please Enter User Code");
   //   }
-  // }, [userCode, initiateChat.data, pageLimit, isInitiationSuccess]);
+  // }
+
+  function onSuccessGetMessages(data, isMounted) {
+    if (data?.data?.length) {
+      if (isMounted) {
+        setMessages((prev) => [...data?.data].reverse());
+      } else {
+        setMessages((prev) =>
+          [...[...prev].reverse(), ...data?.data].reverse()
+        );
+      }
+    }
+  }
 
   function onConnect(data) {
-    setMessages((prev) => [...prev, data.data]);
+    console.log("data");
+    setMessages((prev) => [...prev, data]);
     const container = containerRef?.current;
     setTimeout(() => {
       container.scrollTo({
@@ -98,27 +101,26 @@ const Chatbox = ({ toggleChatBox, visible, color }) => {
   }
 
   useEffect(() => {
-    if (isInitiationSuccess) {
-      socket.connect();
-
-      const eventListenerName = `pchat-pubuser-${userCode}-${initiateChat?.data?.data?.id}`;
-      socket.on(eventListenerName, onConnect);
-
+    if (chat) {
+      socket.emit("join-chat", chat.id);
+      socket.on("newMessage", onConnect);
       return () => {
-        socket.disconnect();
-        socket.off(eventListenerName, onConnect);
+        socket.off("newMessage", onConnect);
+        socket.emit("leave-chat", chat.id);
       };
     }
-  }, [socket, userCode, initiateChat?.data?.data?.id, isInitiationSuccess]);
+  }, [chat]);
 
   function scrollFunc(e) {
     if (containerRef?.current?.scrollTop === 0) {
-      setPageLimit((prev) => {
-        return {
-          page: prev.page + 1,
-          limit: prev.limit,
-        };
-      });
+      const newPageLimit = { page: pageLimit.page + 1, limit: pageLimit.limit };
+      getAllChatMessagesApi(
+        dispatch,
+        newPageLimit,
+        chat.id,
+        (data, isMounted = false) => onSuccessGetMessages(data, isMounted)
+      );
+      setPageLimit(newPageLimit);
     }
   }
 
@@ -140,6 +142,29 @@ const Chatbox = ({ toggleChatBox, visible, color }) => {
       }
     }
   }, [messages]);
+
+  function onChatCreationSuccess(data) {
+    setChat(data.data);
+    getAllChatMessagesApi(
+      dispatch,
+      pageLimit,
+      data.data.id,
+      (data, isMounted = true) => onSuccessGetMessages(data, isMounted)
+    );
+  }
+
+  useEffect(() => {
+    if (chatContext?.data?.user1Id && chatContext?.data?.user2Id) {
+      createChatApi(
+        dispatch,
+        {
+          user1Id: chatContext?.data?.user1Id,
+          user2Id: chatContext?.data?.user2Id,
+        },
+        onChatCreationSuccess
+      );
+    }
+  }, []);
   return (
     <div
       className="absolute bottom-20 w-[359px] bg-white rounded-lg shadow-2xl"

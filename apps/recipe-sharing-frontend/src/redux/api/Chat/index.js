@@ -1,4 +1,4 @@
-import { postRequest } from "../../../utils/baseApi";
+import { getRequest, postRequest } from "../../../utils/baseApi";
 import { handleApiErrors } from "../../../utils/util";
 import endpoints from "../../endpoints";
 import {
@@ -47,17 +47,15 @@ export async function sendMessageApi(dispatch, body, chatId, onSuccess) {
 export async function getAllChatMessagesApi(
   dispatch,
   pageLimit,
-  body,
   chatId,
   onSuccess
 ) {
   try {
     dispatch(getAllChatMessages());
-    const res = await postRequest(
+    const res = await getRequest(
       `${endpoints.Chat.getAllChatMessages(chatId)}?page=${
         pageLimit.page
-      }&limit=${pageLimit.limit}`,
-      body
+      }&limit=${pageLimit.limit}`
     );
     dispatch(getAllChatMessagesSuccess(res.data));
     onSuccess(res.data);

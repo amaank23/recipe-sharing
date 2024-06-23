@@ -30,8 +30,11 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
 
+const onlineUsers = new Map();
+
 app.use((req: CustomRequest, res, next) => {
   req.io = io;
+  req.onlineUsers = onlineUsers;
   next();
 });
 
@@ -52,8 +55,6 @@ app.use("/api/chats", ChatsRoutes);
 
 app.use(errorMiddleware);
 
-const onlineUsers = new Map();
-
 // Handle the connection event
 io.on("connection", (socket) => {
   console.log("a user connected");
@@ -62,6 +63,7 @@ io.on("connection", (socket) => {
   socket.on("join", (userId) => {
     onlineUsers.set(userId, socket.id);
     io.emit("userOnline", userId);
+    console.log(userId, " is online");
 
     // Emit current online users to the newly joined user
     socket.emit("currentOnlineUsers", Array.from(onlineUsers.keys()));
@@ -70,8 +72,10 @@ io.on("connection", (socket) => {
     // Add the user to the chat room
     socket.join(chatId);
   });
-  socket.on("sendMessage", async (message) => {
-    io.to(message.chat.id).emit("newMessage", message);
+  socket.on("sendMessage", (message) => {
+    console.log("hello");
+
+    socket.to(message.chat.id).emit("newMessage", message);
   });
 
   // after user logged out
@@ -79,6 +83,8 @@ io.on("connection", (socket) => {
     for (const [userId, socketId] of onlineUsers.entries()) {
       if (socketId === socket.id) {
         onlineUsers.delete(userId);
+
+        console.log(userId, " is offline");
         io.emit("userOffline", userId);
         break;
       }

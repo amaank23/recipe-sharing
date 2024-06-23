@@ -7,6 +7,7 @@ import { DefaultEventsMap } from "socket.io/dist/typed-events";
 export interface CustomRequest extends Request {
   user?: JwtPayload;
   io?: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>;
+  onlineUsers?: Map<string, string>;
 }
 
 export default function authMiddleware(

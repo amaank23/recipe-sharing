@@ -46,15 +46,15 @@ function App() {
         <Route
           path="/*"
           element={
-            <AuthGuard>
-              <ChatProvider>
+            <ChatProvider>
+              <AuthGuard>
                 <Routes>
                   <Route path="/" element={<Newsfeed />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/profile/:id" element={<ProfileOther />} />
                 </Routes>
-              </ChatProvider>
-            </AuthGuard>
+              </AuthGuard>
+            </ChatProvider>
           }
         />
       </Routes>

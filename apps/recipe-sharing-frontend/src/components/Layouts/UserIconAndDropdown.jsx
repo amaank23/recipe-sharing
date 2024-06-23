@@ -5,8 +5,11 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { authFailure } from "./../../redux/slices/Auth/authSlice";
 import { Link } from "react-router-dom";
+import { socket } from "../../utils/socket";
+import { useChat } from "../../utils/context/chatContext";
 const UserIconAndDropdown = () => {
   const auth = useSelector((state) => state.auth);
+  const chatContext = useChat();
   const dispatch = useDispatch();
   const items = [
     {
@@ -14,7 +17,17 @@ const UserIconAndDropdown = () => {
       key: "0",
     },
     {
-      label: <button onClick={() => dispatch(authFailure())}>Logout</button>,
+      label: (
+        <button
+          onClick={() => {
+            chatContext.closeChat();
+            socket.emit("leave");
+            dispatch(authFailure());
+          }}
+        >
+          Logout
+        </button>
+      ),
       key: "1",
     },
   ];

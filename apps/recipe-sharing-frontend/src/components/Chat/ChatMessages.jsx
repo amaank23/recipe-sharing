@@ -1,10 +1,9 @@
-import { nanoid } from "nanoid";
 import React, { useEffect, useRef } from "react";
-import { Spin } from "antd";
-import { useSelector } from "react-redux";
+import { getFromStorage } from "../../utils/storage";
 
 const ChatMessages = ({ messages }) => {
   const scrollRef = useRef();
+  const user = getFromStorage("user");
   // useEffect(() => {
   //     if(messages?.length <= 6){
   //         scrollRef?.current?.scrollIntoView({ behavior: "smooth" })
@@ -18,13 +17,13 @@ const ChatMessages = ({ messages }) => {
   return (
     <div>
       <div className="h-full flex flex-col gap-3 mt-3 chat">
-        <Spin className="text-black" />
+        {/* <Spin className="text-black" /> */}
 
         {messages.map((item) => {
           return (
             <div
               style={
-                item.sendBy === "PublicUser"
+                item.sender.id === user.id
                   ? {
                       backgroundColor: "#b7b5b542",
                       padding: "0.63rem",
@@ -42,9 +41,9 @@ const ChatMessages = ({ messages }) => {
                       wordWrap: "break-word",
                     }
               }
-              key={nanoid()}
+              key={item.id}
             >
-              <p style={{ fontSize: "0.75rem" }}>{item?.message}</p>
+              <p style={{ fontSize: "0.75rem" }}>{item?.content}</p>
             </div>
           );
         })}
